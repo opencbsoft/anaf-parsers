@@ -3,11 +3,13 @@
 import argparse
 
 from parsers.calendar.parser import CalendarParser
+from parsers.clasificatii.parser import ClasificatiiParser
 from parsers.iban.parser import IbanParser
 
 PARSERS = {
     "iban": IbanParser,
     "calendar": CalendarParser,
+    "clasificatii": ClasificatiiParser,
 }
 
 
