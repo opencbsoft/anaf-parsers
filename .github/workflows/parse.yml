@@ -49,23 +49,43 @@ jobs:
             echo "::endgroup::"
           done
 
-      - name: Checkout data branch
+      - name: Checkout data branch (preserving output)
         run: |
+          # Save new output aside
+          mv output /tmp/new_output 2>/dev/null || true
+
+          # Switch to data branch (has previous data)
           git fetch origin data || true
-          git checkout data 2>/dev/null || git checkout --orphan data
-
-      - name: Update data
-        run: |
-          # Clear old data files (keep .git)
-          find . -maxdepth 1 ! -name '.git' ! -name 'output' ! -name '.' -exec rm -rf {} +
-
-          # Move output to root
-          if [ -d output ]; then
-            cp -r output/* .
-            rm -rf output
+          if git rev-parse --verify origin/data >/dev/null 2>&1; then
+            git checkout data
+          else
+            git checkout --orphan data
+            git rm -rf . 2>/dev/null || true
           fi
 
-          # Create an index
+          # Restore new output
+          mv /tmp/new_output /tmp/output 2>/dev/null || true
+
+      - name: Merge new data (keep old if parser failed)
+        run: |
+          # For each parser directory that produced new output,
+          # replace the old data. If a parser produced nothing,
+          # the previous data stays untouched.
+          if [ -d /tmp/output ]; then
+            for parser_dir in /tmp/output/*/; do
+              parser_name=$(basename "$parser_dir")
+              file_count=$(find "$parser_dir" -name '*.zip' | wc -l)
+              if [ "$file_count" -gt 0 ]; then
+                echo "Updating $parser_name ($file_count files)"
+                rm -rf "./$parser_name"
+                cp -r "$parser_dir" "./$parser_name"
+              else
+                echo "Keeping old data for $parser_name (no new output)"
+              fi
+            done
+          fi
+
+          # Rebuild index from whatever is on the branch now
           echo "# ANAF Parsed Data" > README.md
           echo "" >> README.md
           echo "Auto-generated on $(date -u '+%Y-%m-%d %H:%M UTC')" >> README.md
