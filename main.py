@@ -2,10 +2,12 @@
 """ANAF data parsers."""
 import argparse
 
+from parsers.calendar.parser import CalendarParser
 from parsers.iban.parser import IbanParser
 
 PARSERS = {
     "iban": IbanParser,
+    "calendar": CalendarParser,
 }
 
 
