@@ -85,15 +85,21 @@ jobs:
             done
           fi
 
-          # Rebuild index from whatever is on the branch now
+          # Clean up any non-data files (e.g. __pycache__)
+          find . -name '__pycache__' -type d -exec rm -rf {} + 2>/dev/null || true
+          find . -name '*.pyc' -delete 2>/dev/null || true
+
+          # Rebuild index with raw download URLs
+          RAW="https://raw.githubusercontent.com/${{ github.repository }}/data"
           echo "# ANAF Parsed Data" > README.md
           echo "" >> README.md
           echo "Auto-generated on $(date -u '+%Y-%m-%d %H:%M UTC')" >> README.md
           echo "" >> README.md
           echo "## Files" >> README.md
           find . -name '*.zip' -not -path './.git/*' | sort | while read f; do
+            path="${f#./}"
             size=$(du -h "$f" | cut -f1 | xargs)
-            echo "- [\`${f#./}\`](${f#./}) ($size)" >> README.md
+            echo "- [\`${path}\`](${RAW}/${path}) ($size)" >> README.md
           done
 
       - name: Commit and push data
