@@ -168,6 +168,7 @@ class CalendarParser(BaseParser):
                     "obligatie": obligatie_text,
                     "formulare": formulare,
                     "contribuabili": contribuabili,
+                    "tip_contribuabil": self._extract_taxpayer_types(contribuabili),
                     "baza_legala": baza_legala,
                 }
             )
@@ -211,3 +212,35 @@ class CalendarParser(BaseParser):
 
             forms.append({"cod": cod, "denumire": text, "url": url})
         return forms
+
+    @staticmethod
+    def _extract_taxpayer_types(text):
+        """Extract taxpayer category tags from the contribuabili text."""
+        tags = []
+        lower = text.lower()
+
+        patterns = [
+            ("PF", r"persoan[aeă]\w*\s+fizic[ăei]|fizic[ăei]\s"),
+            ("PJ", r"persoan[aeă]\w*\s+juridic[ăei]|juridic[ăei]\s"
+                   r"|societ[aă][tț]\w+|[iî]ntreprinder\w+\s+multinat"),
+            ("PI", r"persoan[aeă]\w*\s+impozabil[ăei]|contribuabil"),
+            ("IP", r"institu[tț]i\w*\s+public[eă]"),
+            ("angajator", r"pl[aă]titori\w*\s+de\s+salarii|angajator"),
+            ("nerezident", r"nerezident"),
+            ("microintreprindere", r"micro[iî]ntreprinder"),
+            ("ONG", r"organiza[tț]i\w+\s+non[-]?profit|organiza[tț]i\w+\s+neguvern"),
+            ("PFA", r"activit[aă][tț]i\s+economice\s+[iî]n\s+mod\s+independent"
+                    r"|profesii\s+libere"),
+            ("accize", r"antrepozitar\w+|produse\s+accizabil\w+"
+                       r"|destinatar\w+\s+[iî]nregistra[tț]"
+                       r"|expeditor\w+\s+[i��]nregistra[tț]"
+                       r"|importator\w+\s+autorizat"
+                       r"|produc[aă]tor\w+\s+de\s+vinuri"),
+            ("operator", r"operator\w+\s+economic\w*|operator\w+\s+de\s+platform[ăa]"),
+        ]
+
+        for tag, pattern in patterns:
+            if re.search(pattern, lower):
+                tags.append(tag)
+
+        return tags

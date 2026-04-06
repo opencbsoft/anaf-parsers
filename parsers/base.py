@@ -1,4 +1,5 @@
 import json
+import zipfile
 from pathlib import Path
 
 
@@ -18,8 +19,10 @@ class BaseParser:
         raise NotImplementedError
 
     def save_json(self, data, filename):
-        path = self.output_dir / filename
-        path.parent.mkdir(parents=True, exist_ok=True)
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-        print(f"  Saved {path}")
+        zip_path = self.output_dir / (filename + ".zip")
+        zip_path.parent.mkdir(parents=True, exist_ok=True)
+        json_bytes = json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8")
+        with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
+            zf.writestr(filename, json_bytes)
+        size_mb = zip_path.stat().st_size / (1024 * 1024)
+        print(f"  Saved {zip_path} ({size_mb:.1f} MB)")

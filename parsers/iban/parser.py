@@ -1,6 +1,5 @@
 import os
 import re
-import shutil
 import subprocess
 import tempfile
 from urllib.parse import urljoin
@@ -47,19 +46,21 @@ class IbanParser(BaseParser):
         self.session.headers.update({"User-Agent": "Mozilla/5.0 (anaf-parser)"})
 
     def run(self):
-        self._archive_old_output()
-
         print("Fetching county data from localapi...")
         counties_meta = self._fetch_counties_meta()
 
         print("Fetching ANAF IBAN page...")
         county_entries = self._fetch_anaf_index()
 
+        all_judete_regular = []
+        all_judete_public = []
+
         for entry in county_entries:
             county_name = entry["name"]
             print(f"\n=== {county_name} ===")
 
             meta = self._match_county(county_name, counties_meta)
+            localities = self._fetch_localities(meta.get("cod_jud", ""))
             all_trezorerii = []
 
             for pdf_info in entry["pdfs"]:
@@ -68,13 +69,15 @@ class IbanParser(BaseParser):
                 )
                 if not accounts:
                     continue
-                all_trezorerii.append(
-                    {
-                        "cod": pdf_info["code"],
-                        "denumire": treasury_name or pdf_info.get("name", ""),
-                        "conturi": accounts,
-                    }
-                )
+                locality = self._match_locality(treasury_name, localities)
+                trez = {
+                    "cod": pdf_info["code"],
+                    "denumire": treasury_name or pdf_info.get("name", ""),
+                    "conturi": accounts,
+                }
+                if locality:
+                    trez["localitate"] = locality
+                all_trezorerii.append(trez)
 
             # Split accounts into regular vs public institution
             regular_trez = []
@@ -97,38 +100,25 @@ class IbanParser(BaseParser):
 
             file_key = entry.get("file_key") or meta.get("auto", county_name[:2]).lower()
 
-            self.save_json(
-                {"judet": meta, "trezorerii": regular_trez}, f"{file_key}.json"
-            )
+            if regular_trez:
+                all_judete_regular.append(
+                    {"judet": meta, "file_key": file_key, "trezorerii": regular_trez}
+                )
             if public_trez:
-                self.save_json(
-                    {"judet": meta, "trezorerii": public_trez},
-                    f"institutii_publice/{file_key}.json",
+                all_judete_public.append(
+                    {"judet": meta, "file_key": file_key, "trezorerii": public_trez}
                 )
 
-        print("\nDone!")
+        self.save_json(all_judete_regular, "iban.json")
+        self.save_json(all_judete_public, "iban_institutii_publice.json")
 
-    def _archive_old_output(self):
-        """Move existing output to old/ subdirectory before a fresh run."""
-        if not self.output_dir.exists():
-            return
-        # Check if there are any files to archive (exclude old/ itself)
-        has_files = any(
-            p for p in self.output_dir.iterdir() if p.name != "old"
+        total_reg = sum(
+            len(a) for j in all_judete_regular for t in j["trezorerii"] for a in [t["conturi"]]
         )
-        if not has_files:
-            return
-
-        old_dir = self.output_dir / "old"
-        if old_dir.exists():
-            shutil.rmtree(old_dir)
-        old_dir.mkdir(parents=True)
-
-        for item in self.output_dir.iterdir():
-            if item.name == "old":
-                continue
-            shutil.move(str(item), str(old_dir / item.name))
-        print(f"Archived previous output to {old_dir}")
+        total_pub = sum(
+            len(a) for j in all_judete_public for t in j["trezorerii"] for a in [t["conturi"]]
+        )
+        print(f"\nDone! {total_reg:,} regular + {total_pub:,} public institution accounts.")
 
     # ------------------------------------------------------------------
     # Data fetching
@@ -156,6 +146,42 @@ class IbanParser(BaseParser):
             "auto": anaf_name[:2].upper(),
             "siruta": "",
         }
+
+    def _fetch_localities(self, cod_jud):
+        """Fetch localities for a county from localapi."""
+        if not cod_jud:
+            return []
+        try:
+            resp = self.session.get(
+                f"{LOCALAPI_URL}/judete/{cod_jud}/localitati/", timeout=10
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            return data if isinstance(data, list) else data.get("localitati", data)
+        except requests.RequestException:
+            return []
+
+    def _match_locality(self, treasury_name, localities):
+        """Match a treasury name to a locality from localapi."""
+        if not treasury_name or not localities:
+            return None
+        # Treasury names look like "Trezorerie operativa Municipiul Alba Iulia"
+        # or "Trezorerie operativa Sector 1"
+        # Strip the prefix to get the city name
+        name = re.sub(
+            r"Trezoreri[ea]\s+(operativ[aă]\s+)?(Municipiul\s+)?",
+            "",
+            treasury_name,
+            flags=re.IGNORECASE,
+        ).strip()
+        if not name:
+            return None
+
+        norm_name = self._normalize_for_match(name)
+        for loc in localities:
+            if self._normalize_for_match(loc["denumire"]) == norm_name:
+                return loc
+        return None
 
     @staticmethod
     def _normalize_for_match(text):
