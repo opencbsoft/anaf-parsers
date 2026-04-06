@@ -30,6 +30,12 @@ MONTH_NAMES = {
     "DECEMBRIE": "decembrie",
 }
 
+MONTH_NUMBERS = {
+    "ianuarie": 1, "februarie": 2, "martie": 3, "aprilie": 4,
+    "mai": 5, "iunie": 6, "iulie": 7, "august": 8,
+    "septembrie": 9, "octombrie": 10, "noiembrie": 11, "decembrie": 12,
+}
+
 
 class CalendarParser(BaseParser):
     name = "calendar"
@@ -56,7 +62,7 @@ class CalendarParser(BaseParser):
             if m:
                 year = int(m.group(1))
 
-        months = self._parse_calendar(soup)
+        months = self._parse_calendar(soup, year)
 
         output = {"an": year, "luni": months}
         self.save_json(output, f"calendar_{year}.json")
@@ -102,7 +108,7 @@ class CalendarParser(BaseParser):
         resp.encoding = "utf-8"
         return BeautifulSoup(resp.text, "lxml")
 
-    def _parse_calendar(self, soup):
+    def _parse_calendar(self, soup, year):
         """Parse the calendar HTML into structured month data."""
         months = []
 
@@ -123,7 +129,7 @@ class CalendarParser(BaseParser):
             if not table:
                 continue
 
-            obligations = self._parse_month_table(table)
+            obligations = self._parse_month_table(table, year)
             months.append({"luna": month_name, "obligatii": obligations})
 
         return months
@@ -134,7 +140,7 @@ class CalendarParser(BaseParser):
         collapsed = spaced_name.replace(" ", "").upper()
         return MONTH_NAMES.get(collapsed, "")
 
-    def _parse_month_table(self, table):
+    def _parse_month_table(self, table, year):
         """Parse a month's table rows into obligation dicts."""
         obligations = []
 
@@ -158,6 +164,7 @@ class CalendarParser(BaseParser):
             obligations.append(
                 {
                     "termen": termen,
+                    "data": self._extract_date(termen, year),
                     "obligatie": obligatie_text,
                     "formulare": formulare,
                     "contribuabili": contribuabili,
@@ -166,6 +173,29 @@ class CalendarParser(BaseParser):
             )
 
         return obligations
+
+    @staticmethod
+    def _extract_date(termen, year):
+        """Try to extract a YYYY-MM-DD date from a termen string.
+
+        Only matches when the termen starts with a day-of-week name
+        followed by the date, e.g. 'luni 12 ianuarie'.
+        Returns empty string if no date can be extracted.
+        """
+        m = re.match(
+            r"(?:luni|marți|marţi|miercuri|joi|vineri|sâmbătă|sâmbata|"
+            r"duminică|duminica)\s+(\d{1,2})\s+"
+            r"(ianuarie|februarie|martie|aprilie|mai|iunie"
+            r"|iulie|august|septembrie|octombrie|noiembrie|decembrie)",
+            termen.lower().strip(),
+        )
+        if not m:
+            return ""
+        day = int(m.group(1))
+        month = MONTH_NUMBERS.get(m.group(2), 0)
+        if not month:
+            return ""
+        return f"{year}-{month:02d}-{day:02d}"
 
     @staticmethod
     def _extract_forms(cell):
