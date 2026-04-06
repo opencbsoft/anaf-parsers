@@ -1,0 +1,89 @@
+name: Parse ANAF data
+
+on:
+  schedule:
+    # Weekly on Monday at 06:00 UTC
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+    inputs:
+      parsers:
+        description: "Parsers to run (comma-separated: iban,calendar,clasificatii)"
+        required: false
+        default: "iban,calendar,clasificatii"
+
+jobs:
+  parse:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Determine parsers to run
+        id: parsers
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "list=${{ github.event.inputs.parsers }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "list=iban,calendar,clasificatii" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run parsers
+        run: |
+          IFS=',' read -ra PARSERS <<< "${{ steps.parsers.outputs.list }}"
+          for parser in "${PARSERS[@]}"; do
+            parser=$(echo "$parser" | xargs)
+            echo "::group::Running $parser parser"
+            python main.py "$parser" || echo "::warning::Parser $parser failed"
+            echo "::endgroup::"
+          done
+
+      - name: Checkout data branch
+        run: |
+          git fetch origin data || true
+          git checkout data 2>/dev/null || git checkout --orphan data
+
+      - name: Update data
+        run: |
+          # Clear old data files (keep .git)
+          find . -maxdepth 1 ! -name '.git' ! -name 'output' ! -name '.' -exec rm -rf {} +
+
+          # Move output to root
+          if [ -d output ]; then
+            cp -r output/* .
+            rm -rf output
+          fi
+
+          # Create an index
+          echo "# ANAF Parsed Data" > README.md
+          echo "" >> README.md
+          echo "Auto-generated on $(date -u '+%Y-%m-%d %H:%M UTC')" >> README.md
+          echo "" >> README.md
+          echo "## Files" >> README.md
+          find . -name '*.zip' -not -path './.git/*' | sort | while read f; do
+            size=$(du -h "$f" | cut -f1 | xargs)
+            echo "- [\`${f#./}\`](${f#./}) ($size)" >> README.md
+          done
+
+      - name: Commit and push data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update parsed data $(date -u '+%Y-%m-%d')"
+            git push origin data
+          fi
