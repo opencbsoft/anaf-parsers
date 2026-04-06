@@ -6,7 +6,7 @@ Data is updated weekly via GitHub Actions and published on the [`data`](https://
 
 ## Data links
 
-All files are zip-compressed JSON. Replace `raw.githubusercontent.com` with your preferred CDN if needed.
+All files are zip-compressed JSON.
 
 ### IBAN Treasury Accounts
 
@@ -14,8 +14,8 @@ Source: [ANAF - Coduri IBAN](https://www.anaf.ro/anaf/internet/ANAF/asistenta_co
 
 | File | Description |
 |------|-------------|
-| [`iban.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/iban/iban.json.zip) | IBAN accounts grouped by county (sursa A, B, C, D, H, I, J) |
-| [`iban_institutii_publice.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/iban/iban_institutii_publice.json.zip) | Public institution IBAN accounts (sursa E, F, G) |
+| [`iban.json.zip`](https://github.com/opencbsoft/anaf-parsers/blob/data/iban/iban.json.zip) | IBAN accounts grouped by county (sursa A, B, C, D, H, I, J) |
+| [`iban_institutii_publice.json.zip`](https://github.com/opencbsoft/anaf-parsers/blob/data/iban/iban_institutii_publice.json.zip) | Public institution IBAN accounts (sursa E, F, G) |
 
 Each account includes: `iban`, `cont`, `capitol`, `subcapitol`, `denumire`, `sursa_finantare`, `data_publicarii`. Each treasury includes matched locality data from [localapi.ro](https://address.localapi.ro).
 
@@ -25,7 +25,7 @@ Source: [ANAF - Calendar obligatii fiscale](https://www.anaf.ro/anaf/internet/AN
 
 | File | Description |
 |------|-------------|
-| [`calendar_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/calendar/calendar_2026.json.zip) | Fiscal obligations calendar |
+| [`calendar_2026.json.zip`](https://github.com/opencbsoft/anaf-parsers/blob/data/calendar/calendar_2026.json.zip) | Fiscal obligations calendar |
 
 Each obligation includes: `termen`, `data` (ISO date when available), `obligatie`, `formulare` (form codes + URLs), `contribuabili`, `tip_contribuabil` (tags: PF, PJ, PI, IP, angajator, nerezident, accize, operator), `baza_legala`.
 
@@ -35,20 +35,20 @@ Source: [MFP - Clasificatiile bugetare](https://mfinante.gov.ro/domenii/bugetul-
 
 | File | Description |
 |------|-------------|
-| [`clasificatie_indicatori_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_indicatori_2026.json.zip) | Clasificatia indicatorilor privind finantele publice (Anexa I) |
-| [`clasificatie_economica_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_economica_2026.json.zip) | Clasificatia economica a cheltuielilor (Anexa I economica) |
-| [`clasificatie_departamentala_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_departamentala_2026.json.zip) | Clasificatia in profil departamental (Anexa II) |
-| [`clasificatie_departamentala_venituri_proprii_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_departamentala_venituri_proprii_2026.json.zip) | Clasificatia departamentala - venituri proprii (Anexa III) |
-| [`clasificatie_buget_stat_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_buget_stat_2026.json.zip) | Clasificatia indicatorilor privind bugetul de stat (Anexa 1) |
-| [`clasificatie_bugete_locale_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_bugete_locale_2026.json.zip) | Clasificatia indicatorilor privind bugetele locale (Anexa 2) |
-| [`clasificatie_asigurari_sociale_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_asigurari_sociale_2026.json.zip) | Bugetul asigurarilor sociale de stat (Anexa 3) |
-| [`clasificatie_somaj_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_somaj_2026.json.zip) | Bugetul asigurarilor pentru somaj (Anexa 4) |
-| [`clasificatie_sanatate_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_sanatate_2026.json.zip) | Bugetul FNUASS (Anexa 5) |
-| [`clasificatie_credite_externe_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_credite_externe_2026.json.zip) | Venituri si cheltuieli din credite externe (Anexa 6) |
-| [`clasificatie_credite_interne_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_credite_interne_2026.json.zip) | Venituri si cheltuieli din credite interne (Anexa 7) |
-| [`clasificatie_fonduri_externe_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_fonduri_externe_2026.json.zip) | Bugetul fondurilor externe nerambursabile (Anexa 8) |
-| [`clasificatie_trezorerie_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_trezorerie_2026.json.zip) | Bugetul trezoreriei statului (Anexa 9) |
-| [`clasificatie_institutii_publice_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_institutii_publice_2026.json.zip) | Bugetul institutiilor publice (Anexa 10) |
+| [`clasificatie_indicatori_2026.json.zip`](https://github.com/opencbsoft/anaf-parsers/blob/data/clasificatii/clasificatie_indicatori_2026.json.zip) | Clasificatia indicatorilor privind finantele publice (Anexa I) |
+| [`clasificatie_economica_2026.json.zip`](https://github.com/opencbsoft/anaf-parsers/blob/data/clasificatii/clasificatie_economica_2026.json.zip) | Clasificatia economica a cheltuielilor (Anexa I economica) |
+| [`clasificatie_departamentala_2026.json.zip`](https://github.com/opencbsoft/anaf-parsers/blob/data/clasificatii/clasificatie_departamentala_2026.json.zip) | Clasificatia in profil departamental (Anexa II) |
+| [`clasificatie_departamentala_venituri_proprii_2026.json.zip`](https://github.com/opencbsoft/anaf-parsers/blob/data/clasificatii/clasificatie_departamentala_venituri_proprii_2026.json.zip) | Clasificatia departamentala - venituri proprii (Anexa III) |
+| [`clasificatie_buget_stat_2026.json.zip`](https://github.com/opencbsoft/anaf-parsers/blob/data/clasificatii/clasificatie_buget_stat_2026.json.zip) | Clasificatia indicatorilor privind bugetul de stat (Anexa 1) |
+| [`clasificatie_bugete_locale_2026.json.zip`](https://github.com/opencbsoft/anaf-parsers/blob/data/clasificatii/clasificatie_bugete_locale_2026.json.zip) | Clasificatia indicatorilor privind bugetele locale (Anexa 2) |
+| [`clasificatie_asigurari_sociale_2026.json.zip`](https://github.com/opencbsoft/anaf-parsers/blob/data/clasificatii/clasificatie_asigurari_sociale_2026.json.zip) | Bugetul asigurarilor sociale de stat (Anexa 3) |
+| [`clasificatie_somaj_2026.json.zip`](https://github.com/opencbsoft/anaf-parsers/blob/data/clasificatii/clasificatie_somaj_2026.json.zip) | Bugetul asigurarilor pentru somaj (Anexa 4) |
+| [`clasificatie_sanatate_2026.json.zip`](https://github.com/opencbsoft/anaf-parsers/blob/data/clasificatii/clasificatie_sanatate_2026.json.zip) | Bugetul FNUASS (Anexa 5) |
+| [`clasificatie_credite_externe_2026.json.zip`](https://github.com/opencbsoft/anaf-parsers/blob/data/clasificatii/clasificatie_credite_externe_2026.json.zip) | Venituri si cheltuieli din credite externe (Anexa 6) |
+| [`clasificatie_credite_interne_2026.json.zip`](https://github.com/opencbsoft/anaf-parsers/blob/data/clasificatii/clasificatie_credite_interne_2026.json.zip) | Venituri si cheltuieli din credite interne (Anexa 7) |
+| [`clasificatie_fonduri_externe_2026.json.zip`](https://github.com/opencbsoft/anaf-parsers/blob/data/clasificatii/clasificatie_fonduri_externe_2026.json.zip) | Bugetul fondurilor externe nerambursabile (Anexa 8) |
+| [`clasificatie_trezorerie_2026.json.zip`](https://github.com/opencbsoft/anaf-parsers/blob/data/clasificatii/clasificatie_trezorerie_2026.json.zip) | Bugetul trezoreriei statului (Anexa 9) |
+| [`clasificatie_institutii_publice_2026.json.zip`](https://github.com/opencbsoft/anaf-parsers/blob/data/clasificatii/clasificatie_institutii_publice_2026.json.zip) | Bugetul institutiilor publice (Anexa 10) |
 
 Each classification entry includes: `cod`, `capitol`, `subcapitol`, `paragraf`, `denumire`.
 
