@@ -1,6 +1,6 @@
 # ANAF Parsed Data
 
-Auto-generated on 2026-04-13 08:08 UTC
+Auto-generated on 2026-04-20 08:12 UTC
 
 ## Files
 - [`calendar/calendar_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/calendar/calendar_2026.json.zip) (44K)
