@@ -1,9 +1,9 @@
 # ANAF Parsed Data
 
-Auto-generated on 2026-04-20 08:12 UTC
+Auto-generated on 2026-04-27 08:29 UTC
 
 ## Files
-- [`calendar/calendar_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/calendar/calendar_2026.json.zip) (44K)
+- [`calendar/calendar_2025.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/calendar/calendar_2025.json.zip) (4.0K)
 - [`clasificatii/clasificatie_asigurari_sociale_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_asigurari_sociale_2026.json.zip) (8.0K)
 - [`clasificatii/clasificatie_buget_stat_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_buget_stat_2026.json.zip) (24K)
 - [`clasificatii/clasificatie_bugete_locale_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_bugete_locale_2026.json.zip) (16K)
