@@ -1,6 +1,6 @@
 # ANAF Parsed Data
 
-Auto-generated on 2026-05-04 08:33 UTC
+Auto-generated on 2026-05-11 09:42 UTC
 
 ## Files
 - [`calendar/calendar_2025.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/calendar/calendar_2025.json.zip) (4.0K)
