@@ -1,6 +1,6 @@
 # ANAF Parsed Data
 
-Auto-generated on 2026-08-03 09:46 UTC
+Auto-generated on 2026-08-10 07:42 UTC
 
 ## Files
 - [`calendar/calendar_2025.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/calendar/calendar_2025.json.zip) (4.0K)
@@ -18,5 +18,5 @@ Auto-generated on 2026-08-03 09:46 UTC
 - [`clasificatii/clasificatie_sanatate_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_sanatate_2026.json.zip) (8.0K)
 - [`clasificatii/clasificatie_somaj_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_somaj_2026.json.zip) (8.0K)
 - [`clasificatii/clasificatie_trezorerie_2026.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/clasificatii/clasificatie_trezorerie_2026.json.zip) (4.0K)
-- [`iban/iban.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/iban/iban.json.zip) (8.8M)
+- [`iban/iban.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/iban/iban.json.zip) (8.7M)
 - [`iban/iban_institutii_publice.json.zip`](https://raw.githubusercontent.com/opencbsoft/anaf-parsers/data/iban/iban_institutii_publice.json.zip) (7.7M)
